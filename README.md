@@ -13,7 +13,7 @@
 ### Установка
 1. Клонируйте репозиторий:
     ```sh
-    git clone https://github.com/yourusername/skystore.git
+    git clone https://github.com/Annabse27/Project_Django_19.2.git
     cd skystore
     ```
 
