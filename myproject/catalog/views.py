@@ -10,7 +10,8 @@ def product_detail(request, pk):
 
 def index(request):
     products = Product.objects.all()
-    return render(request, 'catalog/index.html', {'products': products})
+    context = {'object_list': products}
+    return render(request, 'catalog/index.html', context)
 
 
 def contact(request):
