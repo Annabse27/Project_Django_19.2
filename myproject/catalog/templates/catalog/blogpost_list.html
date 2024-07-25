@@ -11,11 +11,10 @@
       {% for post in posts %}
         <div class="col-md-4">
           <div class="card mb-4 box-shadow">
-            {% if post.preview_image %}
+            {% if post.preview_image and post.preview_image.url %}
               <img class="card-img-top" src="{{ post.preview_image.url }}" alt="{{ post.title }}">
             {% else %}
               <img class="card-img-top" src="{% static 'images/new_default.jpg' %}" alt="{{ post.title }}">
-              <p>Static URL: {% static 'images/new_default.jpg' %}</p> <!-- Для отладки!!!!!!!!! -->
             {% endif %}
             <div class="card-body">
               <h5 class="card-title">{{ post.title }}</h5>

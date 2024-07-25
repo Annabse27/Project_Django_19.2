@@ -6,7 +6,11 @@
 {% block content %}
   <div class="container">
     <h1>{{ post.title }}</h1>
-    <img src="{{ post.preview_image.url }}" alt="{{ post.title }}" class="img-fluid">
+    {% if post.preview_image and post.preview_image.url %}
+      <img src="{{ post.preview_image.url }}" alt="{{ post.title }}" class="img-fluid">
+    {% else %}
+      <img src="{% static 'images/new_default.jpg' %}" alt="{{ post.title }}" class="img-fluid">
+    {% endif %}
     <p>{{ post.content }}</p>
   </div>
 {% endblock %}

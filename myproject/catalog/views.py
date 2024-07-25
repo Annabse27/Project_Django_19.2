@@ -7,12 +7,12 @@
 '''
 
 
-from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
-from django.urls import reverse_lazy
 from .models import Product, BlogPost
 from .forms import ContactForm, ProductForm, BlogPostForm
 
+from django.urls import reverse_lazy
+from django.utils.text import slugify
 
 class ProductListView(ListView):
     model = Product
@@ -51,10 +51,20 @@ class BlogPostListView(ListView):
     template_name = 'catalog/blogpost_list.html'
     context_object_name = 'posts'
 
+    def get_queryset(self):
+        return BlogPost.objects.filter(is_published=True)
+
+
 class BlogPostDetailView(DetailView):
     model = BlogPost
     template_name = 'catalog/blogpost_detail.html'
     context_object_name = 'post'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        obj.view_count += 1  # Увеличиваем счетчик просмотров
+        obj.save()
+        return obj
 
 class BlogPostCreateView(CreateView):
     model = BlogPost
@@ -62,14 +72,24 @@ class BlogPostCreateView(CreateView):
     template_name = 'catalog/blogpost_form.html'
     success_url = reverse_lazy('blogpost_list')
 
+    def form_valid(self, form):
+        if form.is_valid():
+            new_blog = form.save(commit=False)
+            new_blog.slug = slugify(new_blog.title)
+            new_blog.save()
+        return super().form_valid(form)
+
+
 class BlogPostUpdateView(UpdateView):
     model = BlogPost
     form_class = BlogPostForm
     template_name = 'catalog/blogpost_form.html'
-    success_url = reverse_lazy('blogpost_list')
+
+    def get_success_url(self):
+        return reverse('blogpost_detail', args=[self.object.pk])
+
 
 class BlogPostDeleteView(DeleteView):
     model = BlogPost
     template_name = 'catalog/blogpost_confirm_delete.html'
     success_url = reverse_lazy('blogpost_list')
-
