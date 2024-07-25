@@ -1,0 +1,14 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block title %}Create Blog Post{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1>Create Blog Post</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+{% endblock %}
