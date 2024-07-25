@@ -54,7 +54,6 @@ class BlogPostListView(ListView):
     def get_queryset(self):
         return BlogPost.objects.filter(is_published=True)
 
-
 class BlogPostDetailView(DetailView):
     model = BlogPost
     template_name = 'catalog/blogpost_detail.html'
@@ -62,7 +61,7 @@ class BlogPostDetailView(DetailView):
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
-        obj.view_count += 1  # Увеличиваем счетчик просмотров
+        obj.view_count += 1
         obj.save()
         return obj
 
@@ -79,7 +78,6 @@ class BlogPostCreateView(CreateView):
             new_blog.save()
         return super().form_valid(form)
 
-
 class BlogPostUpdateView(UpdateView):
     model = BlogPost
     form_class = BlogPostForm
@@ -87,7 +85,6 @@ class BlogPostUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('blogpost_detail', args=[self.object.pk])
-
 
 class BlogPostDeleteView(DeleteView):
     model = BlogPost
