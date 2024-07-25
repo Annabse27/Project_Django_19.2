@@ -1,37 +1,41 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product
+'''
+1. `index` → `ListView`
+2. `contact` → `FormView`
+3. `product_create` → `CreateView`
+4. `product_detail` → `DetailView`
+
+'''
+
+
+
+
+from django.views.generic import ListView, FormView, CreateView, DetailView
+from django.urls import reverse_lazy
+from .models import Product, Feedback
 from .forms import ContactForm, ProductForm
-from django.core.paginator import Paginator
 
-def index(request):
-    products = Product.objects.all()
-    paginator = Paginator(products, 4)  # Показывать 4 продукта на странице
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
-    return render(request, 'catalog/index.html', context)
+class IndexView(ListView):
+    model = Product
+    template_name = 'catalog/index.html'
+    context_object_name = 'products'
+    paginate_by = 4
 
-def contact(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse("Спасибо за ваше сообщение!")
-    else:
-        form = ContactForm()
-    return render(request, 'catalog/contact.html', {'form': form})
+class ContactView(FormView):
+    template_name = 'catalog/contact.html'
+    form_class = ContactForm
+    success_url = reverse_lazy('contact')
 
-def product_create(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('index')
-    else:
-        form = ProductForm()
-    return render(request, 'catalog/product_form.html', {'form': form})
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    context = {'product': product}
-    return render(request, 'catalog/product_detail.html', context)
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('index')
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
