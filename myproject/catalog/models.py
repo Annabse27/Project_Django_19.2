@@ -10,12 +10,14 @@ class Feedback(models.Model):
     def __str__(self):
         return self.name
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
 
     def __str__(self):
         return self.name
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -29,8 +31,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-from django.db import models
-from django.utils import timezone
 
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)

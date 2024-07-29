@@ -10,9 +10,9 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from .models import Product, BlogPost
 from .forms import ContactForm, ProductForm, BlogPostForm
-
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
+
 
 class ProductListView(ListView):
     model = Product
@@ -39,11 +39,9 @@ class ContactView(FormView):
     form_class = ContactForm
     success_url = reverse_lazy('contact')
 
-
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
-
 
 
 class BlogPostListView(ListView):
@@ -53,6 +51,7 @@ class BlogPostListView(ListView):
 
     def get_queryset(self):
         return BlogPost.objects.filter(is_published=True)
+
 
 class BlogPostDetailView(DetailView):
     model = BlogPost
@@ -64,6 +63,7 @@ class BlogPostDetailView(DetailView):
         obj.view_count += 1
         obj.save()
         return obj
+
 
 class BlogPostCreateView(CreateView):
     model = BlogPost
@@ -78,6 +78,7 @@ class BlogPostCreateView(CreateView):
             new_blog.save()
         return super().form_valid(form)
 
+
 class BlogPostUpdateView(UpdateView):
     model = BlogPost
     form_class = BlogPostForm
@@ -85,6 +86,7 @@ class BlogPostUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('blogpost_detail', args=[self.object.pk])
+
 
 class BlogPostDeleteView(DeleteView):
     model = BlogPost
