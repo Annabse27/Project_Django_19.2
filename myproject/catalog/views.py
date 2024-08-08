@@ -1,18 +1,8 @@
-'''
-1. `index` → `ListView`
-2. `contact` → `FormView`
-3. `product_create` → `CreateView`
-4. `product_detail` → `DetailView`
-
-'''
-
-
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from .models import Product, BlogPost
 from .forms import ContactForm, ProductForm, BlogPostForm
 from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
-
 
 class ProductListView(ListView):
     model = Product
@@ -20,19 +10,16 @@ class ProductListView(ListView):
     context_object_name = 'products'
     paginate_by = 4
 
-
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
-
 
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('index')
-
 
 class ContactView(FormView):
     template_name = 'catalog/contact.html'
@@ -43,7 +30,6 @@ class ContactView(FormView):
         form.save()
         return super().form_valid(form)
 
-
 class BlogPostListView(ListView):
     model = BlogPost
     template_name = 'catalog/blogpost_list.html'
@@ -51,7 +37,6 @@ class BlogPostListView(ListView):
 
     def get_queryset(self):
         return BlogPost.objects.filter(is_published=True)
-
 
 class BlogPostDetailView(DetailView):
     model = BlogPost
@@ -63,7 +48,6 @@ class BlogPostDetailView(DetailView):
         obj.view_count += 1
         obj.save()
         return obj
-
 
 class BlogPostCreateView(CreateView):
     model = BlogPost
@@ -78,7 +62,6 @@ class BlogPostCreateView(CreateView):
             new_blog.save()
         return super().form_valid(form)
 
-
 class BlogPostUpdateView(UpdateView):
     model = BlogPost
     form_class = BlogPostForm
@@ -86,7 +69,6 @@ class BlogPostUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('blogpost_detail', args=[self.object.pk])
-
 
 class BlogPostDeleteView(DeleteView):
     model = BlogPost
