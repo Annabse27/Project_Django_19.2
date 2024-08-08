@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
-from .models import Product, BlogPost
+from .models import Product, BlogPost, Version
 from .forms import ContactForm, ProductForm, BlogPostForm
 from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
@@ -9,6 +9,15 @@ class ProductListView(ListView):
     template_name = 'catalog/index.html'
     context_object_name = 'products'
     paginate_by = 4
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = context['products']
+        for product in products:
+            current_version = product.versions.filter(is_current=True).first()
+            if current_version:
+                product.current_version = current_version
+        return context
 
 class ProductDetailView(DetailView):
     model = Product

@@ -1,6 +1,4 @@
 from django.db import models
-from django.utils import timezone
-
 
 class Feedback(models.Model):
     name = models.CharField(max_length=100)
@@ -10,14 +8,12 @@ class Feedback(models.Model):
     def __str__(self):
         return self.name
 
-
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
 
     def __str__(self):
         return self.name
-
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -30,7 +26,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
@@ -45,5 +40,11 @@ class BlogPost(models.Model):
     def __str__(self):
         return self.title
 
+class Version(models.Model):
+    product = models.ForeignKey(Product, related_name='versions', on_delete=models.CASCADE)
+    version_number = models.CharField(max_length=50)
+    version_name = models.CharField(max_length=100)
+    is_current = models.BooleanField(default=False)
 
-
+    def __str__(self):
+        return f"{self.product.name} - {self.version_name} ({self.version_number})"
