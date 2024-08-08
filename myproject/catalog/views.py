@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from .models import Product, BlogPost, Version
-from .forms import ContactForm, ProductForm, BlogPostForm
+from .forms import ContactForm, ProductForm, BlogPostForm, VersionForm
 from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
 
@@ -83,3 +83,23 @@ class BlogPostDeleteView(DeleteView):
     model = BlogPost
     template_name = 'catalog/blogpost_confirm_delete.html'
     success_url = reverse_lazy('blogpost_list')
+
+# Новые представления для работы с версиями продукта
+class VersionCreateView(CreateView):
+    model = Version
+    form_class = VersionForm
+    template_name = 'catalog/version_form.html'
+    success_url = reverse_lazy('index')
+
+class VersionUpdateView(UpdateView):
+    model = Version
+    form_class = VersionForm
+    template_name = 'catalog/version_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('index')
+
+class VersionDeleteView(DeleteView):
+    model = Version
+    template_name = 'catalog/version_confirm_delete.html'
+    success_url = reverse_lazy('index')

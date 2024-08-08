@@ -1,16 +1,25 @@
 from django import forms
-from .models import Feedback, Product, BlogPost
+from .models import Feedback, Product, BlogPost, Version
 import re
 
 # Список запрещенных слов
 PROHIBITED_WORDS = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
-class ContactForm(forms.ModelForm):
+class FormStylingMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if isinstance(field, forms.BooleanField):
+                field.widget.attrs.update({'class': 'form-check-input'})
+            else:
+                field.widget.attrs.update({'class': 'form-control'})
+
+class ContactForm(forms.ModelForm, FormStylingMixin):
     class Meta:
         model = Feedback
         fields = ['name', 'phone', 'message']
 
-class ProductForm(forms.ModelForm):
+class ProductForm(forms.ModelForm, FormStylingMixin):
     class Meta:
         model = Product
         fields = ['name', 'description', 'image', 'category', 'price']
@@ -29,7 +38,12 @@ class ProductForm(forms.ModelForm):
                 raise forms.ValidationError(f'Описание содержит запрещенное слово: {word}')
         return description
 
-class BlogPostForm(forms.ModelForm):
+class BlogPostForm(forms.ModelForm, FormStylingMixin):
     class Meta:
         model = BlogPost
         fields = ['title', 'slug', 'content', 'preview_image', 'is_published']
+
+class VersionForm(forms.ModelForm, FormStylingMixin):
+    class Meta:
+        model = Version
+        fields = ['product', 'version_number', 'version_name', 'is_current']
