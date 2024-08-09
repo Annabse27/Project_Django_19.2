@@ -39,7 +39,7 @@ MANIFEST
 
 
 # Django migrations
-**/migrations/**
+#**/migrations/**
 
 
 # If you are using Django's static file handling:
