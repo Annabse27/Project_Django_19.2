@@ -5,6 +5,7 @@ import re
 # Список запрещенных слов
 PROHIBITED_WORDS = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
+
 class FormStylingMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -14,12 +15,14 @@ class FormStylingMixin:
             else:
                 field.widget.attrs.update({'class': 'form-control'})
 
-class ContactForm(forms.ModelForm, FormStylingMixin):
+
+class ContactForm(FormStylingMixin, forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ['name', 'phone', 'message']
 
-class ProductForm(forms.ModelForm, FormStylingMixin):
+
+class ProductForm(FormStylingMixin, forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'image', 'category', 'price']
@@ -38,12 +41,22 @@ class ProductForm(forms.ModelForm, FormStylingMixin):
                 raise forms.ValidationError(f'Описание содержит запрещенное слово: {word}')
         return description
 
-class BlogPostForm(forms.ModelForm, FormStylingMixin):
+
+class BlogPostForm(FormStylingMixin, forms.ModelForm):
     class Meta:
         model = BlogPost
         fields = ['title', 'slug', 'content', 'preview_image', 'is_published']
 
-class VersionForm(forms.ModelForm, FormStylingMixin):
+
+
+class VersionForm(FormStylingMixin,forms.ModelForm):
     class Meta:
         model = Version
         fields = ['product', 'version_number', 'version_name', 'is_current']
+
+
+
+
+
+
+

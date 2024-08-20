@@ -3,6 +3,7 @@
 {% block title %}{{ product.name }} - Skystore{% endblock %}
 
 {% block content %}
+<a href="{% url 'product_update' product.pk %}" class="btn btn-primary">Редактировать продукт</a>
 <div class="container">
    <div class="row">
        <div class="col-12">

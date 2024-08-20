@@ -4,6 +4,8 @@ from .forms import ContactForm, ProductForm, BlogPostForm, VersionForm
 from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
 
+
+
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/index.html'
@@ -19,6 +21,8 @@ class ProductListView(ListView):
                 product.current_version = current_version
         return context
 
+
+
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
@@ -29,6 +33,17 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('index')
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+
+    def get_success_url(self):
+        return reverse('product_detail', args=[self.object.pk])
+
+
 
 class ContactView(FormView):
     template_name = 'catalog/contact.html'
