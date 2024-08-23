@@ -1,11 +1,35 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
-from .models import Product, BlogPost, Version
-from .forms import ContactForm, ProductForm, BlogPostForm, VersionForm
-from django.urls import reverse, reverse_lazy
+import random
+import string
+
+from django.views.generic import (
+    ListView, DetailView, UpdateView,
+    DeleteView, FormView, View
+)
+from django.views.generic.edit import CreateView
+
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.hashers import make_password
+
+from .forms import (
+    ContactForm, ProductForm, BlogPostForm,
+    VersionForm, CustomUserCreationForm,
+    CustomAuthenticationForm, PasswordResetRequestForm
+)
+from .models import Product, BlogPost, Version, CustomUser
+
 from django.utils.text import slugify
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.core.mail import send_mail
+
+from django.urls import reverse, reverse_lazy
 
 
 
+# Представления для продуктов
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/index.html'
@@ -21,8 +45,6 @@ class ProductListView(ListView):
                 product.current_version = current_version
         return context
 
-
-
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
@@ -34,7 +56,6 @@ class ProductCreateView(CreateView):
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('index')
 
-
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
@@ -43,8 +64,7 @@ class ProductUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('product_detail', args=[self.object.pk])
 
-
-
+# Представления для контактов
 class ContactView(FormView):
     template_name = 'catalog/contact.html'
     form_class = ContactForm
@@ -54,6 +74,7 @@ class ContactView(FormView):
         form.save()
         return super().form_valid(form)
 
+# Представления для блогов
 class BlogPostListView(ListView):
     model = BlogPost
     template_name = 'catalog/blogpost_list.html'
@@ -99,7 +120,7 @@ class BlogPostDeleteView(DeleteView):
     template_name = 'catalog/blogpost_confirm_delete.html'
     success_url = reverse_lazy('blogpost_list')
 
-# Новые представления для работы с версиями продукта
+# Представления для версий
 class VersionCreateView(CreateView):
     model = Version
     form_class = VersionForm
@@ -118,3 +139,95 @@ class VersionDeleteView(DeleteView):
     model = Version
     template_name = 'catalog/version_confirm_delete.html'
     success_url = reverse_lazy('index')
+
+# Новые представления для управления пользователями
+class SignupView(CreateView):
+    form_class = CustomUserCreationForm
+    template_name = 'catalog/signup.html'
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Отправка письма с верификацией
+        send_mail(
+            'Подтверждение регистрации',
+            'Для завершения регистрации, пожалуйста, перейдите по следующей ссылке: {}'.format(self.get_verification_link(form.instance)),
+            settings.DEFAULT_FROM_EMAIL,
+            [form.instance.email],
+            fail_silently=False,
+        )
+        return response
+
+
+    def get_verification_link(self, user):
+        # Здесь можно реализовать генерацию ссылки для верификации почты
+        return reverse_lazy('email_verification', args=[user.pk])  # пример ссылки
+
+
+
+class CustomLoginView(LoginView):
+    form_class = CustomAuthenticationForm
+    template_name = 'catalog/login.html'
+
+
+class CustomLogoutView(LogoutView):
+    next_page = reverse_lazy('landing')  # Перенаправление на страницу регистрации или выбора действия
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('index')
+    else:
+        form = UserCreationForm()
+    return render(request, 'catalog/signup.html', {'form': form})
+
+
+
+def test_view(request):
+    return render(request, 'catalog/test.html')
+
+
+
+class EmailVerificationView(View):
+    def get(self, request, user_id):
+        user = CustomUser.objects.get(pk=user_id)
+        if user:
+            user.is_active = True
+            user.save()
+        return redirect('login')
+
+
+class PasswordResetView(View):
+    '''Контроллер для восстановления пароля'''
+    def get(self, request):
+        form = PasswordResetRequestForm()
+        return render(request, 'catalog/password_reset_form.html', {'form': form})
+
+
+    def post(self, request):
+        form = PasswordResetRequestForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = CustomUser.objects.filter(email=email).first()
+            if user:
+                new_password = self.generate_random_password()
+                user.password = make_password(new_password)
+                user.save()
+                send_mail(
+                    'Восстановление пароля',
+                    f'Ваш новый пароль: {new_password}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+                return redirect('login')
+        return render(request, 'catalog/password_reset_form.html', {'form': form, 'error': 'Пользователь с таким email не найден.'})
+
+
+    def generate_random_password(self, length=8):
+        chars = string.ascii_letters + string.digits + string.punctuation
+        return ''.join(random.choice(chars) for _ in range(length))

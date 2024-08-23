@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 from .models import BlogPost
 
+
 @receiver(post_save, sender=BlogPost)
 def send_congratulations_email(sender, instance, **kwargs):
     if instance.view_count == 100:

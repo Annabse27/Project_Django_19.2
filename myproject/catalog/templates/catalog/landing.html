@@ -1,0 +1,14 @@
+{% extends 'catalog/base.html' %}
+
+
+{% block title %}Добро пожаловать{% endblock %}
+
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>Добро пожаловать!</h2>
+    <p>Зарегистрируйтесь или войдите в систему для продолжения.</p>
+    <a href="{% url 'signup' %}" class="btn btn-primary">Регистрация</a>
+    <a href="{% url 'login' %}" class="btn btn-secondary">Войти</a>
+</div>
+{% endblock %}

@@ -1,5 +1,9 @@
+from .models import Category, Product, BlogPost, Version, CustomUser
 from django.contrib import admin
-from .models import Category, Product, BlogPost, Version
+
+from django.contrib.auth.admin import UserAdmin
+from django.utils.translation import gettext_lazy as _
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -18,3 +22,30 @@ class BlogPostAdmin(admin.ModelAdmin):
 
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Version)  # для регистрации модели Version
+
+
+
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ('email', 'phone_number', 'country', 'is_staff', 'is_active')
+    list_filter = ('is_staff', 'is_active')
+    search_fields = ('email', 'phone_number')
+    ordering = ('email',)
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        (_('Personal info'), {'fields': ('avatar', 'phone_number', 'country')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2', 'avatar', 'phone_number', 'country'),
+        }),
+    )
+
+
+admin.site.register(CustomUser, CustomUserAdmin)
+
+
+

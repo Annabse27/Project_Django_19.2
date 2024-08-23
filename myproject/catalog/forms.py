@@ -2,8 +2,14 @@ from django import forms
 from .models import Feedback, Product, BlogPost, Version
 import re
 
+from django.contrib.auth.forms import UserCreationForm
+from .models import CustomUser
+from django.contrib.auth.forms import AuthenticationForm
+
+
 # Список запрещенных слов
 PROHIBITED_WORDS = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
+
 
 
 class FormStylingMixin:
@@ -16,10 +22,12 @@ class FormStylingMixin:
                 field.widget.attrs.update({'class': 'form-control'})
 
 
+
 class ContactForm(FormStylingMixin, forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ['name', 'phone', 'message']
+
 
 
 class ProductForm(FormStylingMixin, forms.ModelForm):
@@ -42,6 +50,7 @@ class ProductForm(FormStylingMixin, forms.ModelForm):
         return description
 
 
+
 class BlogPostForm(FormStylingMixin, forms.ModelForm):
     class Meta:
         model = BlogPost
@@ -55,8 +64,27 @@ class VersionForm(FormStylingMixin,forms.ModelForm):
         fields = ['product', 'version_number', 'version_name', 'is_current']
 
 
+class CustomUserCreationForm(UserCreationForm):
+    'Форма регистрации'
+    class Meta(UserCreationForm.Meta):
+        model = CustomUser
+        fields = ('email', 'password1', 'password2', 'avatar', 'phone_number', 'country')
+        labels = {
+            'email': 'Электронная почта',
+            'password1': 'Пароль',
+            'password2': 'Подтверждение пароля',
+            'avatar': 'Аватар',
+            'phone_number': 'Номер телефона',
+            'country': 'Страна',
+        }
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    'Форма авторизации'
+    username = forms.EmailField(label='Электронная почта')
 
 
 
-
-
+class PasswordResetRequestForm(forms.Form):
+    """Форма для восстановления пароля"""
+    email = forms.EmailField(label="Электронная почта", max_length=254)

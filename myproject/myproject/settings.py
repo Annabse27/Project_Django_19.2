@@ -56,20 +56,23 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'myproject.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+       {
+           'BACKEND': 'django.template.backends.django.DjangoTemplates',
+           'DIRS': [os.path.join(BASE_DIR, 'templates')],
+           'APP_DIRS': True,
+           'OPTIONS': {
+               'context_processors': [
+                   'django.template.context_processors.debug',
+                   'django.template.context_processors.request',
+                   'django.contrib.auth.context_processors.auth',
+                   'django.contrib.messages.context_processors.messages',
+               ],
+           },
+       },
+   ]
+
+
+
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
@@ -107,14 +110,18 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+AUTH_USER_MODEL = 'catalog.CustomUser'
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
+USE_L10 = True
 
 USE_TZ = True
 
@@ -148,3 +155,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'annabse27@gmail.com'
 EMAIL_HOST_PASSWORD = '*****'  # Введите здесь пароль вашей почты
 DEFAULT_FROM_EMAIL = 'annabse27@gmail.com'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'landing'  # Перенаправление после выхода на страницу выбора действия
