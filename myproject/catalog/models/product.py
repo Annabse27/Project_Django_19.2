@@ -26,10 +26,19 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    is_published = models.BooleanField(default=False)  # Поле для публикации
 
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        permissions = [
+            ("can_change_category", "Может изменять категорию продукта"),
+            ("can_publish_product", "Может публиковать продукт"),
+            ("can_unpublish_product", "Может отменять публикацию продукта"),
+        ]
+
 
 
 class Version(models.Model):
