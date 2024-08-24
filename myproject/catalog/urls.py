@@ -1,40 +1,37 @@
 from django.urls import path
 from .views import (
-    ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView,
-    ContactView, BlogPostListView, BlogPostDetailView, BlogPostCreateView,
-    BlogPostUpdateView, BlogPostDeleteView, VersionCreateView, VersionUpdateView,
-    VersionDeleteView, SignupView, CustomLoginView, CustomLogoutView, EmailVerificationView
+    ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView,
+    BlogPostListView, BlogPostDetailView, BlogPostCreateView, BlogPostUpdateView, BlogPostDeleteView,
+    SignupView, CustomLoginView, CustomLogoutView, EmailVerificationView, PasswordResetView
 )
 from django.views.generic import TemplateView
-from .views import test_view
-from django.contrib.auth import views as auth_views
-
-
+from catalog.views.contact_views import ContactView
 
 urlpatterns = [
-    path('', ProductListView.as_view(), name='index'),
-    path('contacts/', ContactView.as_view(), name='contact'),
-    path('product/add/', ProductCreateView.as_view(), name='product_create'),
-    path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
-    path('product/update/<int:pk>/', ProductUpdateView.as_view(), name='product_update'),
-    path('blog/', BlogPostListView.as_view(), name='blogpost_list'),
-    path('blog/<int:pk>/', BlogPostDetailView.as_view(), name='blogpost_detail'),
-    path('blog/add/', BlogPostCreateView.as_view(), name='blogpost_create'),
-    path('blog/update/<int:pk>/', BlogPostUpdateView.as_view(), name='blogpost_update'),
-    path('blog/delete/<int:pk>/', BlogPostDeleteView.as_view(), name='blogpost_delete'),
-    path('version/add/', VersionCreateView.as_view(), name='version_create'),
-    path('version/update/<int:pk>/', VersionUpdateView.as_view(), name='version_update'),
-    path('version/delete/<int:pk>/', VersionDeleteView.as_view(), name='version_delete'),
-    path('login/', CustomLoginView.as_view(), name='login'),
-    path('signup/', SignupView.as_view(), name='signup'),
-    path('logout/', CustomLogoutView.as_view(), name='logout'),
-    path('test/', test_view, name='test-view'),
-    path('verify-email/<int:user_id>/', EmailVerificationView.as_view(), name='email_verification'),
-    path('welcome/', TemplateView.as_view(template_name='catalog/landing.html'), name='landing'),
-    path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(),
-         name='password_reset_confirm'),
-    path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    # Маршруты для продуктов (Products)
+    path('', ProductListView.as_view(), name='index'),  # Главная страница с перечнем продуктов
+    path('product/add/', ProductCreateView.as_view(), name='product_create'),  # Добавление продукта
+    path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),  # Просмотр продукта по ID
+    path('product/update/<int:pk>/', ProductUpdateView.as_view(), name='product_update'),  # Обновление продукта по ID
+    path('product/delete/<int:pk>/', ProductDeleteView.as_view(), name='product_delete'),  # Удаление продукта по ID
 
+    # Маршруты для блогов (Blog posts)
+    path('blog/', BlogPostListView.as_view(), name='blogpost_list'),  # Перечень всех блогов
+    path('blog/<int:pk>/', BlogPostDetailView.as_view(), name='blogpost_detail'),  # Просмотр блога по ID
+    path('blog/add/', BlogPostCreateView.as_view(), name='blogpost_create'),  # Добавление нового блога
+    path('blog/update/<int:pk>/', BlogPostUpdateView.as_view(), name='blogpost_update'),  # Обновление блога по ID
+    path('blog/delete/<int:pk>/', BlogPostDeleteView.as_view(), name='blogpost_delete'),  # Удаление блога по ID
+
+    # Маршруты для управления пользователями (User management)
+    path('signup/', SignupView.as_view(), name='signup'),  # Регистрация нового пользователя
+    path('login/', CustomLoginView.as_view(), name='login'),  # Вход пользователя
+    path('logout/', CustomLogoutView.as_view(), name='logout'),  # Выход пользователя
+    path('verify-email/<int:user_id>/', EmailVerificationView.as_view(), name='email_verification'),  # Верификация email
+
+    # Маршруты для восстановления пароля (Password reset)
+    path('password-reset/', PasswordResetView.as_view(), name='password_reset'),  # Запрос на восстановление пароля
+
+    # Маршруты для статических страниц (Static pages)
+    path('contacts/', ContactView.as_view(), name='contact'),  # Страница контактов
+    path('welcome/', TemplateView.as_view(template_name='catalog/landing.html'), name='landing'),  # Страница приветствия
 ]

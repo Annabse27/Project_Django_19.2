@@ -7,15 +7,24 @@ from django.utils.translation import gettext_lazy as _
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    """
+    Настройка отображения модели Category в административной панели Django.
+    """
     list_display = ('id', 'name', 'description')
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    """
+    Настройка отображения модели Product в административной панели Django.
+    """
     list_display = ('id', 'name', 'description', 'image', 'category', 'price', 'created_at', 'updated_at')
     list_filter = ('category',)
     search_fields = ('name', 'description')
 
 class BlogPostAdmin(admin.ModelAdmin):
+    """
+    Настройка отображения модели BlogPost в административной панели Django.
+    """
     list_display = ('title', 'slug', 'created_at', 'updated_at')
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}
@@ -26,6 +35,9 @@ admin.site.register(Version)  # для регистрации модели Versi
 
 
 class CustomUserAdmin(UserAdmin):
+    """
+    Настройка отображения и управления моделью CustomUser в административной панели Django.
+    """
     model = CustomUser
     list_display = ('email', 'phone_number', 'country', 'is_staff', 'is_active')
     list_filter = ('is_staff', 'is_active')
