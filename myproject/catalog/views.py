@@ -12,6 +12,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 from .forms import (
     ContactForm, ProductForm, BlogPostForm,
@@ -30,7 +32,7 @@ from django.urls import reverse, reverse_lazy
 
 
 # Представления для продуктов
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'catalog/index.html'
     context_object_name = 'products'
@@ -45,24 +47,39 @@ class ProductListView(ListView):
                 product.current_version = current_version
         return context
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('index')
 
-class ProductUpdateView(UpdateView):
+    def form_valid(self, form):
+        # Привязываем продукт к текущему пользователю
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
 
     def get_success_url(self):
         return reverse('product_detail', args=[self.object.pk])
+
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    model = Product
+    template_name = 'catalog/product_confirm_delete.html'
+    success_url = reverse_lazy('index')
+
+
 
 # Представления для контактов
 class ContactView(FormView):

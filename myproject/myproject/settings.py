@@ -156,6 +156,7 @@ EMAIL_HOST_USER = 'annabse27@gmail.com'
 EMAIL_HOST_PASSWORD = '*****'  # Введите здесь пароль вашей почты
 DEFAULT_FROM_EMAIL = 'annabse27@gmail.com'
 
+
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'landing'  # Перенаправление после выхода на страницу выбора действия
