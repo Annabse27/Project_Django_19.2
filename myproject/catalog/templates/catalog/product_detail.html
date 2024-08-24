@@ -1,42 +1,19 @@
 {% extends 'catalog/base.html' %}
 
-{% block title %}{{ product.name }} - Skystore{% endblock %}
+   {% block title %}{{ product.name }} - Skystore{% endblock %}
 
-{% block content %}
-<div class="container">
-  <div class="row">
-      <div class="col-12">
-          <h1>{{ product.name }}</h1>
-          <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
-          <p>{{ product.description }}</p>
-          <h2>${{ product.price }}</h2>
-          <p>Категория: {{ product.category.name }}</p>
-          <p>Создан: {{ product.created_at }}</p>
-          <p>Обновлен: {{ product.updated_at }}</p>
-
-          {# Кнопка редактирования продукта #}
-          {% if perms.catalog.can_change_product_description or perms.catalog.can_change_product_category %}
-              <a href="{% url 'product_update' product.pk %}" class="btn btn-primary">Редактировать продукт</a>
-          {% endif %}
-
-          {# Кнопка удаления продукта #}
-          {% if perms.catalog.can_delete_product %}
-              <a href="{% url 'product_delete' product.pk %}" class="btn btn-danger">Удалить продукт</a>
-          {% endif %}
-
-          {# Кнопка публикации продукта #}
-          {% if not product.is_published and perms.catalog.can_publish_product %}
-              <a href="{% url 'product_publish' product.pk %}" class="btn btn-success">Опубликовать продукт</a>
-          {% endif %}
-
-          {# Кнопка отмены публикации продукта #}
-          {% if product.is_published and perms.catalog.can_unpublish_product %}
-              <a href="{% url 'product_unpublish' product.pk %}" class="btn btn-warning">Отменить публикацию</a>
-          {% endif %}
-      </div>
-  </div>
-</div>
-{% endblock %}
-
-
+   <div class="container">
+       <div class="row">
+           <div class="col-12">
+               <h1>{{ product.name }}</h1>
+               <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+               <p>{{ product.description }}</p>
+               <h2>${{ product.price }}</h2>
+               <p>Категория: {{ product.category.name }}</p>
+               <p>Создан: {{ product.created_at }}</p>
+               <p>Обновлен: {{ product.updated_at }}</p>
+           </div>
+       </div>
+   </div>
+   {% endblock %}
 

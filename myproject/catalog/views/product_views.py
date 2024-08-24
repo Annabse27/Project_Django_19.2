@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from catalog.forms import ProductForm
 from catalog.models import Product
 from django.urls import reverse_lazy
+from django.http import HttpResponseForbidden
 
 class ProductListView(LoginRequiredMixin, ListView):
     """
@@ -43,23 +44,34 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
-class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     """
     Представление для обновления существующего продукта.
     """
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
-    permission_required = 'catalog.can_change_product_description'
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.owner != self.request.user:
+            return HttpResponseForbidden("You are not allowed to edit this product.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('product_detail', args=[self.object.pk])
 
-class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     """
     Представление для удаления продукта.
     """
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('index')
-    permission_required = 'catalog.can_delete_product'
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.owner != self.request.user:
+            return HttpResponseForbidden("You are not allowed to delete this product.")
+        return super().dispatch(request, *args, **kwargs)
