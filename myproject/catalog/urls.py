@@ -9,6 +9,10 @@ from catalog.views.user_views import SignupView, CustomLoginView, CustomLogoutVi
 from django.views.generic import TemplateView
 from catalog.views.contact_views import ContactView
 
+from django.views.decorators.cache import cache_page
+
+
+
 urlpatterns = [
     # Продукты
     path('', ProductListView.as_view(), name='index'),
@@ -36,4 +40,8 @@ urlpatterns = [
 
     # Лэндинг
     path('welcome/', TemplateView.as_view(template_name='catalog/landing.html'), name='landing'),
+
+    #Кеширование
+    path('product/<int:pk>/', cache_page(60 * 15)(ProductDetailView.as_view()), name='product_detail'),
+
 ]
