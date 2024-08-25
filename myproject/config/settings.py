@@ -160,3 +160,15 @@ DEFAULT_FROM_EMAIL = 'annabse27@gmail.com'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'landing'  # Перенаправление после выхода на страницу выбора действия
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',  # адрес Redis сервера
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'IGNORE_EXCEPTIONS': True,  # игнорировать ошибки соединения с Redis
+        }
+    }
+}
