@@ -94,23 +94,47 @@ myproject
 2. **Установите зависимости:**
    ```bash
    poetry install
-   poetry shell
    ```
 
-3. **Примените миграции:**
-   ```bash
-   python manage.py migrate
+3. Создайте файл `.env` в корне проекта и добавьте в него конфиденциальные данные (см. пример ниже):
+
+   ```env
+   SECRET_KEY=your-secret-key
+   DEBUG=True
+   DATABASE_URL=postgres://user:password@localhost:5432/mydatabase
+   REDIS_URL=redis://127.0.0.1:6379/1
+   EMAIL_HOST=smtp.your-email-provider.com
+   EMAIL_PORT=587
+   EMAIL_HOST_USER=your-email@example.com
+   EMAIL_HOST_PASSWORD=your-email-password
    ```
 
-4. **Создайте суперпользователя:**
-   ```bash
-   python manage.py createsuperuser
-   ```
+### Запуск Redis
 
-5. **Запустите сервер разработки:**
+Проект требует активного подключения к Redis для корректной работы. Запустите Redis одним из следующих способов:
+
+- **Локально**:
+  
+  ```bash
+  redis-server
+  ```
+
+- **Через Docker**:
+
+  ```bash
+  docker run -d -p 6379:6379 redis
+  ```
+
+### Запуск проекта
+
+1. Запустите сервер разработки:
+
    ```bash
    python manage.py runserver
    ```
+
+2. Откройте браузер и перейдите по адресу `http://127.0.0.1:8000/`.
+
 
 ## Использование
 
