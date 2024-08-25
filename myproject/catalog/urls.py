@@ -10,6 +10,7 @@ from django.views.generic import TemplateView
 from catalog.views.contact_views import ContactView
 
 from django.views.decorators.cache import cache_page
+from .views.category_views import CategoryListView, ProductByCategoryListView
 
 
 
@@ -43,5 +44,9 @@ urlpatterns = [
 
     #Кеширование
     path('product/<int:pk>/', cache_page(60 * 15)(ProductDetailView.as_view()), name='product_detail'),
+
+    #Другие пути...
+    path('categories/', CategoryListView.as_view(), name='category_list'),
+    path('categories/<int:pk>/', ProductByCategoryListView.as_view(), name='product_by_category'),
 
 ]

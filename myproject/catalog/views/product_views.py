@@ -5,6 +5,9 @@ from catalog.models import Product
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
 
+from catalog.services import get_cached_products  # Импорт функции для кэширования
+
+
 class ProductListView(LoginRequiredMixin, ListView):
     """
     Представление для отображения списка продуктов.
@@ -23,6 +26,10 @@ class ProductListView(LoginRequiredMixin, ListView):
                 product.current_version = current_version
         return context
 
+    def get_queryset(self):
+        return get_cached_products()  # Использование кэшированной версии списка продуктов
+
+
 class ProductDetailView(LoginRequiredMixin, DetailView):
     """
     Представление для отображения деталей продукта.
@@ -30,6 +37,12 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = self.get_object()  # Исправление переменной
+        return context
+
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     """

@@ -1,19 +1,20 @@
 {% extends 'catalog/base.html' %}
 
-   {% block title %}{{ product.name }} - Skystore{% endblock %}
+{% block title %}{{ product.name }}{% endblock %}
 
-   <div class="container">
-       <div class="row">
-           <div class="col-12">
-               <h1>{{ product.name }}</h1>
-               <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
-               <p>{{ product.description }}</p>
-               <h2>${{ product.price }}</h2>
-               <p>Категория: {{ product.category.name }}</p>
-               <p>Создан: {{ product.created_at }}</p>
-               <p>Обновлен: {{ product.updated_at }}</p>
-           </div>
-       </div>
-   </div>
-   {% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+      <div class="col-12">
+          <h1>{{ product.name }}</h1>
+          <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+          <p>{{ product.description }}</p>
+          <h2>${{ product.price }}</h2>
+          <p>Категория: {{ product.category.name }}</p>
+          <p>Создан: {{ product.created_at }}</p>
+          <p>Обновлен: {{ product.updated_at }}</p>
+      </div>
+  </div>
+</div>
+{% endblock %}
 
