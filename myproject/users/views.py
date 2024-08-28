@@ -1,10 +1,14 @@
+import string
+import random
+from django.shortcuts import render, redirect
+
 from django.views.generic.edit import CreateView
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import View
 from users.forms import CustomUserCreationForm, CustomAuthenticationForm, PasswordResetRequestForm
 from users.models import CustomUser
-from django.shortcuts import redirect
+
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.conf import settings
