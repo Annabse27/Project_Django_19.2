@@ -1,4 +1,5 @@
-from .models import Category, Product, BlogPost, Version, CustomUser
+from .models import Category, Product, BlogPost, Version
+from users.models import CustomUser
 from django.contrib import admin
 
 from django.contrib.auth.admin import UserAdmin

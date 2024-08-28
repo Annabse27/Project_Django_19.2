@@ -1,11 +1,13 @@
 from django.urls import path
 from catalog.views.product_views import (
-    ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView
+    ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView,
+    ProductDeleteView
 )
 from catalog.views.blog_views import (
-    BlogPostListView, BlogPostDetailView, BlogPostCreateView, BlogPostUpdateView, BlogPostDeleteView
+    BlogPostListView, BlogPostDetailView, BlogPostCreateView, BlogPostUpdateView,
+    BlogPostDeleteView
 )
-from catalog.views.user_views import SignupView, CustomLoginView, CustomLogoutView, EmailVerificationView, PasswordResetView
+from users.views import SignupView, CustomLoginView, CustomLogoutView, EmailVerificationView, PasswordResetView
 from django.views.generic import TemplateView
 from catalog.views.contact_views import ContactView
 

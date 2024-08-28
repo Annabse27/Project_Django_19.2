@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog',
+    'users'
 ]
 
 # Middleware
@@ -84,7 +85,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Настройки кастомной модели пользователя
-AUTH_USER_MODEL = 'catalog.CustomUser'
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Интернационализация
 LANGUAGE_CODE = 'ru'
